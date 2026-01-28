@@ -5,19 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Vibe Board</title>
     <style>
-        /* Light Theme 'Vibe' */
+        /* Modern Dark Theme 'Vibe' (Default) */
         :root {
-            --bg-color: #f8f9fa;      /* White/Light Gray Background */
-            --card-bg: #ffffff;       /* Pure White Cards */
-            --text-primary: #1e2329;  /* Dark Gray Text */
-            --text-secondary: #707a8a;/* Lighter Gray Text */
-            --accent-green: #0ecb81;  /* Green stays the same */
-            --accent-red: #f6465d;    /* Red stays the same */
-            --border-color: #eaecef;  /* Light Borders */
-            --hover-row: #f5f5f5;     /* Light Hover Effect */
+            --bg-color: #0b0e11;
+            --card-bg: #15191f;
+            --text-primary: #e1e1e1;
+            --text-secondary: #848e9c;
+            --accent-green: #0ecb81;
+            --accent-red: #f6465d;
+            --border-color: #2b3139;
+            --hover-row: #1e2329;
+            --btn-bg: #2b3139;
+            --btn-hover: #363c45;
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* Light Theme Overrides */
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-primary: #1e2329;
+            --text-secondary: #707a8a;
+            /* Accents stay the same */
+            --border-color: #eaecef;
+            --hover-row: #f5f5f5;
+            --btn-bg: #eaecef;
+            --btn-hover: #dfe2e5;
+        }
 
         * { box-sizing: border-box; }
 
@@ -27,13 +41,15 @@
             font-family: var(--font-family);
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
+        /* Header Layout */
         header {
             display: flex;
             justify-content: space-between;
@@ -44,6 +60,35 @@
         }
 
         h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Control Buttons */
+        .icon-btn {
+            background-color: var(--btn-bg);
+            border: none;
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background-color: var(--btn-hover); }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        
+        /* Rotate animation for refresh */
+        .spin { animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Status Text */
         .status { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
         .dot { width: 8px; height: 8px; background-color: var(--text-secondary); border-radius: 50%; display: inline-block; }
         .dot.live { background-color: var(--accent-green); box-shadow: 0 0 8px rgba(14, 203, 129, 0.4); }
@@ -53,7 +98,8 @@
             overflow-x: auto;
             background-color: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+            transition: background-color 0.3s;
         }
 
         table {
@@ -73,15 +119,17 @@
             top: 0;
             border-bottom: 1px solid var(--border-color);
             cursor: default;
+            transition: background-color 0.3s;
         }
 
         th:first-child, td:first-child { text-align: center; width: 50px; }
-        th:nth-child(2), td:nth-child(2) { text-align: left; } /* Name column */
+        th:nth-child(2), td:nth-child(2) { text-align: left; }
 
         td {
+            text-align: right;
             padding: 16px;
             border-bottom: 1px solid var(--border-color);
-            transition: background 0.2s;
+            transition: background 0.2s, border-color 0.3s;
         }
 
         tr:last-child td { border-bottom: none; }
@@ -112,7 +160,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            background: linear-gradient(90deg, transparent, rgba(128,128,128,0.05), transparent);
             transform: translateX(-100%);
             animation: shimmer 1.5s infinite;
         }
@@ -121,11 +169,9 @@
             100% { transform: translateX(100%); }
         }
 
-        @media (max-width: 768px) {
-            th:nth-child(4), td:nth-child(4), /* 1h */
-            th:nth-child(6), td:nth-child(6), /* 7d */
-            th:nth-child(7), td:nth-child(7), /* 1m */
-            th:nth-child(9), td:nth-child(9)  /* Vol */
+        @media (max-width: 1024px) {
+            th:nth-child(8), td:nth-child(8), /* 200d */
+            th:nth-child(9), td:nth-child(9)  /* 1y */
             { display: none; }
         }
     </style>
@@ -135,10 +181,26 @@
     <div class="container">
         <header>
             <h1>Crypto Tracker</h1>
-            <div class="status">
-                <span class="dot" id="statusDot"></span>
-                <span id="statusText">Connecting...</span>
-                <span id="timer" style="margin-left: 10px; font-variant-numeric: tabular-nums;">30s</span>
+            
+            <div class="header-controls">
+                <!-- Theme Toggle -->
+                <button class="icon-btn" id="themeBtn" title="Toggle Theme">
+                    <!-- Sun Icon (for Dark Mode state) -->
+                    <svg id="sunIcon" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
+                    <!-- Moon Icon (hidden by default logic) -->
+                    <svg id="moonIcon" viewBox="0 0 24 24" style="display:none;"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+                </button>
+
+                <!-- Refresh Button -->
+                <button class="icon-btn" id="refreshBtn" title="Refresh Data">
+                    <svg id="refreshIcon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+
+                <!-- Status & Timer -->
+                <div class="status">
+                    <span class="dot" id="statusDot"></span>
+                    <span id="timer" style="font-variant-numeric: tabular-nums;">30s</span>
+                </div>
             </div>
         </header>
 
@@ -153,33 +215,64 @@
                         <th>24h</th>
                         <th>7d</th>
                         <th>30d</th>
+                        <th>200d</th>
+                        <th>1y</th>
                         <th>Mkt Cap</th>
                         <th>24h Vol</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <!-- Loading Rows -->
-                    <tr class="loading-row"><td colspan="9"></td></tr>
-                    <tr class="loading-row"><td colspan="9"></td></tr>
-                    <tr class="loading-row"><td colspan="9"></td></tr>
-                    <tr class="loading-row"><td colspan="9"></td></tr>
-                    <tr class="loading-row"><td colspan="9"></td></tr>
+                    <!-- Loading Skeleton -->
+                    <tr class="loading-row"><td colspan="11"></td></tr>
+                    <tr class="loading-row"><td colspan="11"></td></tr>
+                    <tr class="loading-row"><td colspan="11"></td></tr>
+                    <tr class="loading-row"><td colspan="11"></td></tr>
+                    <tr class="loading-row"><td colspan="11"></td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d";
-        
-        let updateTimer = null;
-        let countdownInterval = null;
+        const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d,200d,1y";
         const REFRESH_RATE = 30; // seconds
 
-        // Format Currency
+        let updateTimer = null;
+        let countdownInterval = null;
+
+        // --- Theme Logic ---
+        const themeBtn = document.getElementById('themeBtn');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        function updateThemeIcon(isLight) {
+            if (isLight) {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        }
+
+        // Check LocalStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            updateThemeIcon(true);
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeIcon(isLight);
+        });
+
+        // --- Data Logic ---
         const fmtUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const fmtUSD_Small = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 4, maximumFractionDigits: 6 });
-        const fmtBig = new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 2 });
+        const fmtCompact = new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 2, style: 'currency', currency: 'USD' });
 
         function formatPrice(price) {
             if (price < 1) return fmtUSD_Small.format(price);
@@ -195,48 +288,44 @@
 
         function formatPercent(num) {
             if (num === null || num === undefined) return "-";
-            const icon = num >= 0 ? "▲" : "▼";
             const colorClass = num >= 0 ? "green" : "red";
             return `<span class="${colorClass}">${Math.abs(num).toFixed(2)}%</span>`;
         }
 
         async function fetchData() {
             try {
-                document.getElementById('statusText').innerText = "Updating...";
-                document.getElementById('statusDot').className = "dot"; // grey
+                // UI Feedback
+                document.getElementById('statusDot').className = "dot"; 
+                document.getElementById('refreshIcon').classList.add('spin'); // Spin animation
+                document.getElementById('timer').innerText = "Updating...";
                 
                 const response = await fetch(API_URL);
-                if (!response.ok) throw new Error("API Limit or Error");
+                if (!response.ok) throw new Error("API Limit");
                 
                 const data = await response.json();
                 renderTable(data);
 
-                document.getElementById('statusText').innerText = "Live";
+                // Success State
                 document.getElementById('statusDot').className = "dot live";
                 resetTimer();
 
             } catch (error) {
                 console.error(error);
-                document.getElementById('statusText').innerText = "Error (Rate Limit?)";
                 document.getElementById('statusDot').className = "dot red";
+                document.getElementById('timer').innerText = "Error";
+            } finally {
+                // Stop spin
+                document.getElementById('refreshIcon').classList.remove('spin');
             }
         }
 
         function renderTable(coins) {
             const tbody = document.getElementById('tableBody');
-            
-            // Find BTC price for conversion
             const btcCoin = coins.find(c => c.symbol === 'btc');
             const btcPrice = btcCoin ? btcCoin.current_price : null;
 
             let html = '';
-
             coins.forEach((coin, index) => {
-                const priceChange1h = coin.price_change_percentage_1h_in_currency;
-                const priceChange24h = coin.price_change_percentage_24h_in_currency;
-                const priceChange7d = coin.price_change_percentage_7d_in_currency;
-                const priceChange30d = coin.price_change_percentage_30d_in_currency; // Coingecko uses '30d' for 1m
-
                 html += `
                     <tr>
                         <td>${index + 1}</td>
@@ -251,16 +340,17 @@
                             <span class="price-usd">${formatPrice(coin.current_price)}</span>
                             <span class="price-btc">${formatBtc(coin.current_price, btcPrice)}</span>
                         </td>
-                        <td>${formatPercent(priceChange1h)}</td>
-                        <td>${formatPercent(priceChange24h)}</td>
-                        <td>${formatPercent(priceChange7d)}</td>
-                        <td>${formatPercent(priceChange30d)}</td>
-                        <td>${fmtUSD.format(coin.market_cap)}</td>
-                        <td>${fmtUSD.format(coin.total_volume)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_1h_in_currency)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_24h_in_currency)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_7d_in_currency)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_30d_in_currency)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_200d_in_currency)}</td>
+                        <td>${formatPercent(coin.price_change_percentage_1y_in_currency)}</td>
+                        <td>${fmtCompact.format(coin.market_cap)}</td>
+                        <td>${fmtCompact.format(coin.total_volume)}</td>
                     </tr>
                 `;
             });
-
             tbody.innerHTML = html;
         }
 
@@ -281,6 +371,11 @@
 
             updateTimer = setTimeout(fetchData, REFRESH_RATE * 1000);
         }
+
+        // Manual Refresh Logic
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            fetchData();
+        });
 
         // Init
         fetchData();
