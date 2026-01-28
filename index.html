@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Vibe Board</title>
+
+    <!-- Inter Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         /* Light Theme (Default) */
         :root {
@@ -18,7 +24,7 @@
             --hover-row: #f9fafb;
             --btn-bg: #f3f4f6;
             --btn-hover: #e5e7eb;
-            --font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         /* Dark Theme Overrides */
@@ -84,7 +90,7 @@
         }
         .icon-btn:hover { background-color: var(--btn-hover); color: var(--text-primary); }
         .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
-        
+
         .spin { animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -147,7 +153,7 @@
 
         /* Market Cap & Vol Align Right usually looks better, but centered requested */
         /* Keeping Price/Vol centered per request */
-        
+
         td {
             padding: 20px 20px;
             border-bottom: 1px solid var(--border-color);
@@ -203,7 +209,7 @@
 
         /* Loading Skeleton */
         .loading-row td { height: 74px; padding: 0; }
-        
+
         @media (max-width: 1300px) {
             th:nth-child(8), td:nth-child(8), /* 200d */
             th:nth-child(9), td:nth-child(9)  /* 1y */
@@ -216,7 +222,7 @@
     <div class="container">
         <header>
             <h1>Crypto Tracker</h1>
-            
+
             <div class="header-controls">
                 <button class="icon-btn" id="themeBtn">
                     <svg id="moonIcon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
@@ -274,7 +280,7 @@
             sunIcon.style.display = isDark ? 'block' : 'none';
             moonIcon.style.display = isDark ? 'none' : 'block';
         }
-        
+
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
             updateThemeIcon(true);
@@ -306,7 +312,7 @@
             try {
                 document.getElementById('statusDot').className = "dot"; 
                 document.getElementById('refreshIcon').classList.add('spin'); 
-                
+
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 renderTable(data);
