@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Vibe Board</title>
+    <style>
+        /* Modern Dark Theme 'Vibe' */
+        :root {
+            --bg-color: #0b0e11;
+            --card-bg: #15191f; /* slightly lighter than bg */
+            --text-primary: #e1e1e1;
+            --text-secondary: #848e9c;
+            --accent-green: #0ecb81;
+            --accent-red: #f6465d;
+            --border-color: #2b3139;
+            --hover-row: #1e2329;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .status { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .dot { width: 8px; height: 8px; background-color: var(--text-secondary); border-radius: 50%; display: inline-block; }
+        .dot.live { background-color: var(--accent-green); box-shadow: 0 0 8px rgba(14, 203, 129, 0.4); }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: var(--card-bg);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: right;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: default;
+        }
+
+        th:first-child, td:first-child { text-align: center; width: 50px; }
+        th:nth-child(2), td:nth-child(2) { text-align: left; } /* Name column */
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: var(--hover-row); }
+
+        /* Coin Info */
+        .coin-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+        .coin-img { width: 24px; height: 24px; border-radius: 50%; }
+        .coin-symbol { color: var(--text-secondary); font-weight: 400; margin-left: 4px; text-transform: uppercase; }
+
+        /* Price Formatting */
+        .price-usd { display: block; font-weight: 600; color: var(--text-primary); }
+        .price-btc { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Percent Changes */
+        .percent { font-weight: 500; }
+        .green { color: var(--accent-green); }
+        .red { color: var(--accent-red); }
+
+        /* Loading Skeleton */
+        .loading-row td { position: relative; overflow: hidden; height: 60px; }
+        .loading-row td::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 768px) {
+            th:nth-child(4), td:nth-child(4), /* 1h */
+            th:nth-child(6), td:nth-child(6), /* 7d */
+            th:nth-child(7), td:nth-child(7), /* 1m */
+            th:nth-child(9), td:nth-child(9)  /* Vol */
+            { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Crypto Tracker</h1>
+            <div class="status">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">Connecting...</span>
+                <span id="timer" style="margin-left: 10px; font-variant-numeric: tabular-nums;">30s</span>
+            </div>
+        </header>
+
+        <div class="table-wrapper">
+            <table id="cryptoTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Coin</th>
+                        <th>Price</th>
+                        <th>1h</th>
+                        <th>24h</th>
+                        <th>7d</th>
+                        <th>30d</th>
+                        <th>Mkt Cap</th>
+                        <th>24h Vol</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Loading Rows -->
+                    <tr class="loading-row"><td colspan="9"></td></tr>
+                    <tr class="loading-row"><td colspan="9"></td></tr>
+                    <tr class="loading-row"><td colspan="9"></td></tr>
+                    <tr class="loading-row"><td colspan="9"></td></tr>
+                    <tr class="loading-row"><td colspan="9"></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d";
+        
+        let updateTimer = null;
+        let countdownInterval = null;
+        const REFRESH_RATE = 30; // seconds
+
+        // Format Currency
+        const fmtUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const fmtUSD_Small = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 4, maximumFractionDigits: 6 });
+        const fmtBig = new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 2 });
+
+        function formatPrice(price) {
+            if (price < 1) return fmtUSD_Small.format(price);
+            return fmtUSD.format(price);
+        }
+
+        function formatBtc(price, btcPrice) {
+            if (!btcPrice) return '';
+            const val = price / btcPrice;
+            if (val >= 1) return val.toFixed(2) + " BTC";
+            return val.toFixed(8) + " BTC";
+        }
+
+        function formatPercent(num) {
+            if (num === null || num === undefined) return "-";
+            const icon = num >= 0 ? "▲" : "▼";
+            const colorClass = num >= 0 ? "green" : "red";
+            return `<span class="${colorClass}">${Math.abs(num).toFixed(2)}%</span>`;
+        }
+
+        async function fetchData() {
+            try {
+                document.getElementById('statusText').innerText = "Updating...";
+                document.getElementById('statusDot').className = "dot"; // grey
+                
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("API Limit or Error");
+                
+                const data = await response.json();
+                renderTable(data);
+
+                document.getElementById('statusText').innerText = "Live";
+                document.getElementById('statusDot').className = "dot live";
+                resetTimer();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('statusText').innerText = "Error (Rate Limit?)";
+                document.getElementById('statusDot').className = "dot red";
+            }
+        }
+
+        function renderTable(coins) {
+            const tbody = document.getElementById('tableBody');
+            
+            // Find BTC price for conversion
+            const btcCoin = coins.find(c => c.symbol === 'btc');
+            const btcPrice = btcCoin ? btcCoin.current_price : null;
+
+            let html = '';
+
+            coins.forEach((coin, index) => {
+                const priceChange1h = coin.price_change_percentage_1h_in_currency;
+                const priceChange24h = coin.price_change_percentage_24h_in_currency;
+                const priceChange7d = coin.price_change_percentage_7d_in_currency;
+                const priceChange30d = coin.price_change_percentage_30d_in_currency; // Coingecko uses '30d' for 1m
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <div class="coin-name">
+                                <img class="coin-img" src="${coin.image}" alt="${coin.name}">
+                                <span>${coin.name}</span>
+                                <span class="coin-symbol">${coin.symbol}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-usd">${formatPrice(coin.current_price)}</span>
+                            <span class="price-btc">${formatBtc(coin.current_price, btcPrice)}</span>
+                        </td>
+                        <td>${formatPercent(priceChange1h)}</td>
+                        <td>${formatPercent(priceChange24h)}</td>
+                        <td>${formatPercent(priceChange7d)}</td>
+                        <td>${formatPercent(priceChange30d)}</td>
+                        <td>${fmtUSD.format(coin.market_cap)}</td>
+                        <td>${fmtUSD.format(coin.total_volume)}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function resetTimer() {
+            let timeLeft = REFRESH_RATE;
+            const timerEl = document.getElementById('timer');
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (updateTimer) clearTimeout(updateTimer);
+
+            timerEl.innerText = timeLeft + "s";
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) timeLeft = 0;
+                timerEl.innerText = timeLeft + "s";
+            }, 1000);
+
+            updateTimer = setTimeout(fetchData, REFRESH_RATE * 1000);
+        }
+
+        // Init
+        fetchData();
+
+    </script>
+</body>
+</html>
