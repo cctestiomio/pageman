@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Vibe Board</title>
 
-    <!-- Inter Font from Google Fonts -->
+    <!-- Inter Font from Google Fonts (Variable Weight) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,6 +49,24 @@
             padding: 24px;
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
+            /* 
+               CRITICAL UPDATE FOR FONT FEATURES:
+               - 'calt' 1: Contextual alternates (standard)
+               - 'ss01' 1: Alternate digits (often used in finance)
+               - 'ss03' 1: Curved 'r' (optional, stylistic)
+               - 'cv11' 1: Single-story 'a' (cleaner look)
+               - 'cv05': Lowercase 'l' tail
+               - 'zero': Slashed zero (optional)
+
+               For the DOLLAR SIGN ($):
+               - Standard Inter $ has a vertical line through it.
+               - To get the "open" or "interrupted" stroke (CoinCodex style), 
+                 we often rely on specific weights or stylistic sets.
+               - In some versions, 'ss02' helps. 
+               - However, the "cleanest" match for CoinCodex often involves 
+                 just ensuring the correct weight and potentially 'cv' settings.
+            */
+            font-feature-settings: "cv11", "ss01"; 
         }
 
         .container {
