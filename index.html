@@ -7,17 +7,17 @@
     <style>
         /* Light Theme (Default) */
         :root {
-            --bg-color: #f4f6f8;
+            --bg-color: #f8f9fa;
             --card-bg: #ffffff;
-            --text-primary: #0f1419;
-            --text-secondary: #5c6670;
-            --accent-green: #00a83e;
-            --accent-red: #d92d20;
-            --border-color: #eef0f3;
-            --hover-row: #f8fafc;
-            --btn-bg: #f0f2f5;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-green: #16c784;
+            --accent-red: #ea3943;
+            --border-color: #e5e7eb;
+            --hover-row: #f9fafb;
+            --btn-bg: #f3f4f6;
             --btn-hover: #e5e7eb;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         /* Dark Theme Overrides */
@@ -39,13 +39,13 @@
             color: var(--text-primary);
             font-family: var(--font-family);
             margin: 0;
-            padding: 20px;
+            padding: 24px;
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -54,18 +54,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        h1 { margin: 0; font-size: 22px; font-weight: 700; }
+        h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
 
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             background: var(--card-bg);
-            padding: 4px 8px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
         }
 
@@ -82,19 +82,19 @@
             justify-content: center;
         }
         .icon-btn:hover { background-color: var(--btn-hover); color: var(--text-primary); }
-        .icon-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
         
         .spin { animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .status { 
-            font-size: 12px; 
+            font-size: 13px; 
             font-weight: 500;
             color: var(--text-secondary); 
             display: flex; 
             align-items: center; 
-            gap: 6px; 
-            padding-left: 8px;
+            gap: 8px; 
+            padding-left: 12px;
             border-left: 1px solid var(--border-color);
         }
         .dot { width: 6px; height: 6px; background-color: var(--text-secondary); border-radius: 50%; }
@@ -103,101 +103,103 @@
         /* Table Styles */
         .table-wrapper {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
-            width: 100%;
-            overflow-x: hidden; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
             white-space: nowrap;
             font-variant-numeric: tabular-nums; 
-            table-layout: auto;
         }
+
+        thead { background-color: var(--bg-color); }
 
         th {
-            color: #8492a6;
-            font-size: 11px;
+            color: var(--text-secondary);
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            text-align: right;
-            padding: 12px 16px;
+            letter-spacing: 0.05em;
+            padding: 18px 20px;
             border-bottom: 1px solid var(--border-color);
-            cursor: default;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: var(--card-bg);
+            text-align: right; /* Default align right for numbers */
         }
 
-        th:nth-child(1), td:nth-child(1) { text-align: center; width: 40px; padding-left: 12px; color: var(--text-secondary); }
-        th:nth-child(2), td:nth-child(2) { text-align: left; }
-        
+        /* Specific Header Alignments */
+        th:nth-child(1) { text-align: left; padding-left: 24px; width: 60px; } /* Rank */
+        th:nth-child(2) { 
+            text-align: left; 
+            position: sticky; 
+            left: 0; 
+            background-color: var(--card-bg); 
+            z-index: 20;
+            box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
+        } /* Name */
+
         td {
-            padding: 14px 16px;
+            padding: 20px 20px;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            text-align: right; /* Default align right for numbers */
             vertical-align: middle;
+        }
+
+        /* Specific Cell Alignments */
+        td:nth-child(1) { text-align: left; padding-left: 24px; color: var(--text-secondary); font-size: 13px;}
+        td:nth-child(2) { 
+            text-align: left; 
+            position: sticky; 
+            left: 0; 
+            background-color: var(--card-bg); 
+            z-index: 20;
+            box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
         }
 
         tr:last-child td { border-bottom: none; }
         tr:hover td { background-color: var(--hover-row); }
 
         /* Coin Info */
-        .coin-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .coin-name { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
         }
-        .coin-img { width: 28px; height: 28px; border-radius: 50%; }
-        
-        .coin-text-group {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .symbol-main {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-        .name-sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.2;
-        }
+        .coin-img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border-color); }
+        .coin-text { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+        .coin-symbol { font-weight: 700; font-size: 15px; color: var(--text-primary); text-transform: uppercase; line-height: 1.1; }
+        .coin-fullname { font-size: 13px; font-weight: 500; color: var(--text-secondary); line-height: 1.1; }
 
         /* Price Formatting */
-        .price-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .price-usd { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-        .price-secondary { font-size: 11px; color: var(--text-secondary); margin-top: 2px; font-weight: 400; }
+        .price-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .price-usd { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+        .price-btc { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 
         /* Percent Changes */
-        .percent { font-weight: 700; font-size: 13px; }
+        .percent { font-weight: 700; font-size: 14px; } /* Larger font for readability */
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
         .neutral { color: var(--text-secondary); }
 
         /* Market Cap & Vol */
-        .cap-vol { font-weight: 500; color: var(--text-primary); }
+        .cap-vol { font-weight: 600; font-size: 14px; color: var(--text-primary); }
 
-        /* Responsive hiding to prevent scroll */
-        @media (max-width: 1400px) {
+        /* Loading Skeleton */
+        .loading-row td { height: 74px; padding: 0; }
+        
+        /* Hide Columns on Small Screens */
+        @media (max-width: 1300px) {
             th:nth-child(8), td:nth-child(8), /* 200d */
             th:nth-child(9), td:nth-child(9)  /* 1y */
             { display: none; }
         }
-        @media (max-width: 1100px) {
-            th:nth-child(7), td:nth-child(7)  /* 30d */
-            { display: none; }
-        }
-
-        /* Loading Skeleton */
-        .loading-row td { height: 60px; padding: 0; }
     </style>
 </head>
 <body>
@@ -242,6 +244,7 @@
                     <tr class="loading-row"><td colspan="11"></td></tr>
                     <tr class="loading-row"><td colspan="11"></td></tr>
                     <tr class="loading-row"><td colspan="11"></td></tr>
+                    <tr class="loading-row"><td colspan="11"></td></tr>
                 </tbody>
             </table>
         </div>
@@ -281,7 +284,8 @@
         function formatBtc(price, btcPrice) {
             if (!btcPrice) return '';
             const val = price / btcPrice;
-            return "B " + val.toFixed(val >= 1 ? 2 : 8); 
+            // Matches user request: just the number, no "B" prefix
+            return val.toFixed(val >= 1 ? 2 : 8); 
         }
 
         function formatPercent(num) {
@@ -320,18 +324,18 @@
                     <tr>
                         <td>${index + 1}</td>
                         <td>
-                            <div class="coin-cell">
+                            <div class="coin-name">
                                 <img class="coin-img" src="${coin.image}" loading="lazy">
-                                <div class="coin-text-group">
-                                    <span class="symbol-main">${coin.symbol.toUpperCase()}</span>
-                                    <span class="name-sub">${coin.name}</span>
+                                <div class="coin-text">
+                                    <span class="coin-symbol">${coin.symbol}</span>
+                                    <span class="coin-fullname">${coin.name}</span>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="price-cell">
+                            <div class="price-wrapper">
                                 <span class="price-usd">${fmtUSD.format(coin.current_price)}</span>
-                                <span class="price-secondary">${formatBtc(coin.current_price, btcPrice)}</span>
+                                <span class="price-btc">${formatBtc(coin.current_price, btcPrice)}</span>
                             </div>
                         </td>
                         <td>${formatPercent(coin.price_change_percentage_1h_in_currency)}</td>
