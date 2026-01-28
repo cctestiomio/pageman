@@ -11,8 +11,8 @@
             --card-bg: #ffffff;
             --text-primary: #0f1419;
             --text-secondary: #5c6670;
-            --accent-green: #00a83e; /* Darker, crisper green */
-            --accent-red: #d92d20;   /* Sharper red */
+            --accent-green: #00a83e;
+            --accent-red: #d92d20;
             --border-color: #eef0f3;
             --hover-row: #f8fafc;
             --btn-bg: #f0f2f5;
@@ -45,7 +45,7 @@
         }
 
         .container {
-            max-width: 1600px; /* Wide container */
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -105,7 +105,6 @@
             background-color: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            /* Ensure it fits on screen without scrollbar if possible, but allow if forced */
             width: 100%;
             overflow-x: hidden; 
         }
@@ -113,14 +112,14 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px; /* Slightly smaller for density */
+            font-size: 13px;
             white-space: nowrap;
             font-variant-numeric: tabular-nums; 
             table-layout: auto;
         }
 
         th {
-            color: #8492a6; /* lighter grey header */
+            color: #8492a6;
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
@@ -130,9 +129,8 @@
             cursor: default;
         }
 
-        /* Specific Column Alignments based on Screenshot */
-        th:nth-child(1), td:nth-child(1) { text-align: center; width: 40px; padding-left: 12px; color: var(--text-secondary); } /* # rank */
-        th:nth-child(2), td:nth-child(2) { text-align: left; } /* Name */
+        th:nth-child(1), td:nth-child(1) { text-align: center; width: 40px; padding-left: 12px; color: var(--text-secondary); }
+        th:nth-child(2), td:nth-child(2) { text-align: left; }
         
         td {
             padding: 14px 16px;
@@ -143,7 +141,7 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background-color: var(--hover-row); }
 
-        /* Coin Info: Matches Screenshot Layout */
+        /* Coin Info */
         .coin-cell {
             display: flex;
             align-items: center;
@@ -167,17 +165,6 @@
             color: var(--text-secondary);
             line-height: 1.2;
         }
-        
-        /* "Buy" Badge Placeholder */
-        .buy-badge {
-            font-size: 10px;
-            padding: 2px 6px;
-            background-color: var(--btn-bg);
-            color: var(--text-secondary);
-            border-radius: 4px;
-            margin-left: 8px;
-            font-weight: 500;
-        }
 
         /* Price Formatting */
         .price-cell {
@@ -189,7 +176,7 @@
         .price-usd { font-weight: 600; font-size: 14px; color: var(--text-primary); }
         .price-secondary { font-size: 11px; color: var(--text-secondary); margin-top: 2px; font-weight: 400; }
 
-        /* Percent Changes - Bold and Clean */
+        /* Percent Changes */
         .percent { font-weight: 700; font-size: 13px; }
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
@@ -198,7 +185,7 @@
         /* Market Cap & Vol */
         .cap-vol { font-weight: 500; color: var(--text-primary); }
 
-        /* Hide extra columns on smaller screens to prevent scrolling */
+        /* Responsive hiding to prevent scroll */
         @media (max-width: 1400px) {
             th:nth-child(8), td:nth-child(8), /* 200d */
             th:nth-child(9), td:nth-child(9)  /* 1y */
@@ -267,7 +254,6 @@
         let updateTimer = null;
         let countdownInterval = null;
 
-        // Theme
         const themeBtn = document.getElementById('themeBtn');
         const sunIcon = document.getElementById('sunIcon');
         const moonIcon = document.getElementById('moonIcon');
@@ -289,21 +275,18 @@
             updateThemeIcon(isDark);
         });
 
-        // Formatters
         const fmtUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
         const fmtCompact = new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 2, style: 'currency', currency: 'USD' });
 
         function formatBtc(price, btcPrice) {
             if (!btcPrice) return '';
             const val = price / btcPrice;
-            // Matches screenshot: "B 1.0000" style
             return "B " + val.toFixed(val >= 1 ? 2 : 8); 
         }
 
         function formatPercent(num) {
             if (num === null || num === undefined) return '<span class="percent neutral">-</span>';
             const color = num > 0 ? "green" : (num < 0 ? "red" : "neutral");
-            // Clean number, no arrow, bold font
             return `<span class="percent ${color}">${num.toFixed(2)}%</span>`;
         }
 
@@ -343,7 +326,6 @@
                                     <span class="symbol-main">${coin.symbol.toUpperCase()}</span>
                                     <span class="name-sub">${coin.name}</span>
                                 </div>
-                                <span class="buy-badge">Buy</span>
                             </div>
                         </td>
                         <td>
