@@ -50,23 +50,12 @@
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
             /* 
-               CRITICAL UPDATE FOR FONT FEATURES:
-               - 'calt' 1: Contextual alternates (standard)
-               - 'ss01' 1: Alternate digits (often used in finance)
-               - 'ss03' 1: Curved 'r' (optional, stylistic)
-               - 'cv11' 1: Single-story 'a' (cleaner look)
-               - 'cv05': Lowercase 'l' tail
-               - 'zero': Slashed zero (optional)
-
-               For the DOLLAR SIGN ($):
-               - Standard Inter $ has a vertical line through it.
-               - To get the "open" or "interrupted" stroke (CoinCodex style), 
-                 we often rely on specific weights or stylistic sets.
-               - In some versions, 'ss02' helps. 
-               - However, the "cleanest" match for CoinCodex often involves 
-                 just ensuring the correct weight and potentially 'cv' settings.
+               Inter Features:
+               cv11: Single-story 'a'
+               ss01: Alternate digits
+               calt: Contextual alternates
             */
-            font-feature-settings: "cv11", "ss01"; 
+            font-feature-settings: "cv11", "ss01", "calt"; 
         }
 
         .container {
@@ -169,9 +158,6 @@
             box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
         }
 
-        /* Market Cap & Vol Align Right usually looks better, but centered requested */
-        /* Keeping Price/Vol centered per request */
-
         td {
             padding: 20px 20px;
             border-bottom: 1px solid var(--border-color);
@@ -206,7 +192,6 @@
         .coin-fullname { font-size: 13px; font-weight: 400; color: var(--text-secondary); line-height: 1.1; }
 
         /* Price Formatting */
-        /* Centered Flex for Price Column */
         .price-wrapper { 
             display: flex; 
             flex-direction: column; 
@@ -217,7 +202,7 @@
         .price-btc { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
 
         /* Percent Changes */
-        .percent { font-weight: 700; font-size: 16px; } /* Larger font: 16px */
+        .percent { font-weight: 700; font-size: 16px; } 
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
         .neutral { color: var(--text-secondary); }
@@ -284,7 +269,8 @@
     </div>
 
     <script>
-        const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d,200d,1y";
+        // UPDATED: per_page changed from 50 to 100 to match CoinCodex screenshot
+        const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d,200d,1y";
         const REFRESH_RATE = 30;
 
         let updateTimer = null;
