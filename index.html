@@ -11,7 +11,8 @@
             --card-bg: #ffffff;
             --text-primary: #111827;
             --text-secondary: #6b7280;
-            --accent-green: #16c784;
+            /* CoinCodex Green */
+            --accent-green: #3cc61e; 
             --accent-red: #ea3943;
             --border-color: #e5e7eb;
             --hover-row: #f9fafb;
@@ -130,11 +131,11 @@
             top: 0;
             z-index: 10;
             background-color: var(--card-bg);
-            text-align: right; /* Default align right for numbers */
+            text-align: center; /* Centered headers */
         }
 
-        /* Specific Header Alignments */
-        th:nth-child(1) { text-align: left; padding-left: 24px; width: 60px; } /* Rank */
+        /* Rank & Name Align Left */
+        th:nth-child(1) { text-align: left; padding-left: 24px; width: 60px; } 
         th:nth-child(2) { 
             text-align: left; 
             position: sticky; 
@@ -142,13 +143,16 @@
             background-color: var(--card-bg); 
             z-index: 20;
             box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
-        } /* Name */
+        }
 
+        /* Market Cap & Vol Align Right usually looks better, but centered requested */
+        /* Keeping Price/Vol centered per request */
+        
         td {
             padding: 20px 20px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
-            text-align: right; /* Default align right for numbers */
+            text-align: center; /* Centered cells */
             vertical-align: middle;
         }
 
@@ -178,12 +182,18 @@
         .coin-fullname { font-size: 13px; font-weight: 500; color: var(--text-secondary); line-height: 1.1; }
 
         /* Price Formatting */
-        .price-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        /* Centered Flex for Price Column */
+        .price-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 2px; 
+        }
         .price-usd { font-weight: 700; font-size: 15px; color: var(--text-primary); }
         .price-btc { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 
         /* Percent Changes */
-        .percent { font-weight: 700; font-size: 14px; } /* Larger font for readability */
+        .percent { font-weight: 700; font-size: 15px; } /* Larger font: 15px */
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
         .neutral { color: var(--text-secondary); }
@@ -194,7 +204,6 @@
         /* Loading Skeleton */
         .loading-row td { height: 74px; padding: 0; }
         
-        /* Hide Columns on Small Screens */
         @media (max-width: 1300px) {
             th:nth-child(8), td:nth-child(8), /* 200d */
             th:nth-child(9), td:nth-child(9)  /* 1y */
@@ -284,7 +293,6 @@
         function formatBtc(price, btcPrice) {
             if (!btcPrice) return '';
             const val = price / btcPrice;
-            // Matches user request: just the number, no "B" prefix
             return val.toFixed(val >= 1 ? 2 : 8); 
         }
 
