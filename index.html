@@ -17,7 +17,6 @@
             --card-bg: #ffffff;
             --text-primary: #111827;
             --text-secondary: #6b7280;
-            /* CoinCodex Green */
             --accent-green: #3cc61e; 
             --accent-red: #ea3943;
             --border-color: #e5e7eb;
@@ -46,20 +45,16 @@
             color: var(--text-primary);
             font-family: var(--font-family);
             margin: 0;
-            padding: 24px;
+            padding: 16px; /* Reduced outer padding slightly */
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
-            /* 
-               Inter Features:
-               cv11: Single-story 'a'
-               ss01: Alternate digits
-               calt: Contextual alternates
-            */
             font-feature-settings: "cv11", "ss01", "calt"; 
         }
 
         .container {
-            max-width: 1500px;
+            /* CHANGED: Uses full width instead of fixed 1500px to fix cut-off */
+            width: 98%;
+            max-width: 100%; 
             margin: 0 auto;
         }
 
@@ -68,10 +63,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
-        h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+        h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
 
         .header-controls {
             display: flex;
@@ -120,7 +115,7 @@
             border-radius: 16px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-            overflow-x: auto;
+            overflow-x: auto; /* Keeps scroll if screen is VERY small */
         }
 
         table {
@@ -134,21 +129,22 @@
 
         th {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px; /* Slightly smaller header font */
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            padding: 18px 20px;
+            /* CHANGED: Reduced padding to fit more columns */
+            padding: 14px 10px; 
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 10;
             background-color: var(--card-bg);
-            text-align: center; /* Centered headers */
+            text-align: center; 
         }
 
         /* Rank & Name Align Left */
-        th:nth-child(1) { text-align: left; padding-left: 24px; width: 60px; } 
+        th:nth-child(1) { text-align: left; padding-left: 16px; width: 40px; } 
         th:nth-child(2) { 
             text-align: left; 
             position: sticky; 
@@ -156,18 +152,21 @@
             background-color: var(--card-bg); 
             z-index: 20;
             box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
+            padding-left: 10px;
         }
 
         td {
-            padding: 20px 20px;
+            /* CHANGED: Reduced padding to fit more columns */
+            padding: 14px 10px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
-            text-align: center; /* Centered cells */
+            text-align: center; 
             vertical-align: middle;
+            font-size: 13px; /* Ensure base font isn't too huge */
         }
 
         /* Specific Cell Alignments */
-        td:nth-child(1) { text-align: left; padding-left: 24px; color: var(--text-secondary); font-size: 13px;}
+        td:nth-child(1) { text-align: left; padding-left: 16px; color: var(--text-secondary); font-size: 13px;}
         td:nth-child(2) { 
             text-align: left; 
             position: sticky; 
@@ -175,6 +174,7 @@
             background-color: var(--card-bg); 
             z-index: 20;
             box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
+            padding-left: 10px;
         }
 
         tr:last-child td { border-bottom: none; }
@@ -184,12 +184,12 @@
         .coin-name { 
             display: flex; 
             align-items: center; 
-            gap: 14px; 
+            gap: 10px; /* Reduced gap */
         }
-        .coin-img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border-color); }
+        .coin-img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-color); }
         .coin-text { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
-        .coin-symbol { font-weight: 600; font-size: 14px; color: var(--text-primary); text-transform: uppercase; line-height: 1.1; }
-        .coin-fullname { font-size: 13px; font-weight: 400; color: var(--text-secondary); line-height: 1.1; }
+        .coin-symbol { font-weight: 600; font-size: 13px; color: var(--text-primary); text-transform: uppercase; line-height: 1.1; }
+        .coin-fullname { font-size: 12px; font-weight: 400; color: var(--text-secondary); line-height: 1.1; }
 
         /* Price Formatting */
         .price-wrapper { 
@@ -198,26 +198,22 @@
             align-items: center; 
             gap: 2px; 
         }
-        .price-usd { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-        .price-btc { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+        .price-usd { font-weight: 600; font-size: 13px; color: var(--text-primary); }
+        .price-btc { font-size: 11px; font-weight: 400; color: var(--text-secondary); }
 
         /* Percent Changes */
-        .percent { font-weight: 700; font-size: 16px; } 
+        .percent { font-weight: 700; font-size: 14px; } /* Reduced from 16px */
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
         .neutral { color: var(--text-secondary); }
 
         /* Market Cap & Vol */
-        .cap-vol { font-weight: 600; font-size: 14px; color: var(--text-primary); }
+        .cap-vol { font-weight: 600; font-size: 13px; color: var(--text-primary); }
 
         /* Loading Skeleton */
         .loading-row td { height: 74px; padding: 0; }
-
-        @media (max-width: 1300px) {
-            th:nth-child(8), td:nth-child(8), /* 200d */
-            th:nth-child(9), td:nth-child(9)  /* 1y */
-            { display: none; }
-        }
+        
+        /* Removed the media query hiding columns so 200d/1y are visible */
     </style>
 </head>
 <body>
@@ -269,7 +265,6 @@
     </div>
 
     <script>
-        // UPDATED: per_page changed from 50 to 100 to match CoinCodex screenshot
         const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d,200d,1y";
         const REFRESH_RATE = 30;
 
