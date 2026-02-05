@@ -184,9 +184,22 @@
             align-items: center; 
             gap: 12px; 
         }
+        
+        /* NEW: Link Styles */
+        .coin-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+        }
+        .coin-link:hover .coin-symbol {
+            color: var(--accent-green);
+            text-decoration: underline;
+        }
+
         .coin-img { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border-color); }
         .coin-text { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
-        .coin-symbol { font-weight: 600; font-size: 14px; color: var(--text-primary); text-transform: uppercase; }
+        .coin-symbol { font-weight: 600; font-size: 14px; color: var(--text-primary); text-transform: uppercase; transition: color 0.2s; }
         .coin-fullname { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
 
         /* Price Formatting */
@@ -199,7 +212,7 @@
         .price-usd { font-weight: 600; font-size: 15px; color: var(--text-primary); }
         .price-btc { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
 
-        /* Percent Changes - Restored to 16px */
+        /* Percent Changes */
         .percent { font-weight: 700; font-size: 16px; } 
         .green { color: var(--accent-green); }
         .red { color: var(--accent-red); }
@@ -327,17 +340,20 @@
 
             let html = '';
             coins.forEach((coin, index) => {
+                // ADDED: Anchor tag around the coin-name div using coin.id
                 html += `
                     <tr>
                         <td>${index + 1}</td>
                         <td>
-                            <div class="coin-name">
-                                <img class="coin-img" src="${coin.image}" loading="lazy">
-                                <div class="coin-text">
-                                    <span class="coin-symbol">${coin.symbol}</span>
-                                    <span class="coin-fullname">${coin.name}</span>
+                            <a href="https://www.coingecko.com/en/coins/${coin.id}" target="_blank" rel="noopener noreferrer" class="coin-link">
+                                <div class="coin-name">
+                                    <img class="coin-img" src="${coin.image}" loading="lazy">
+                                    <div class="coin-text">
+                                        <span class="coin-symbol">${coin.symbol}</span>
+                                        <span class="coin-fullname">${coin.name}</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </td>
                         <td>
                             <div class="price-wrapper">
